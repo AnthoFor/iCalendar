@@ -1,0 +1,230 @@
+*, ::after,::before {
+    box-sizing: border-box;
+    padding: 0px;
+    margin: 0px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color: white;
+}
+body {
+    background-image: url(../img/cal.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center center;
+    width: 100vw;
+}
+/* Section header */
+header {
+    background: rgba(0, 0, 0, 0.158);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    -webkit-backdrop-filter: blur(3px);
+    backdrop-filter: blur(3px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    width: 90%;
+    display: flex;
+    z-index: 0;
+    justify-content: center;
+    margin: 10vh auto 3vh auto;
+}
+h1 {
+    padding: 6px;
+    font-variant: small-caps;
+    font-size: calc(15px + 1vmin);
+    white-space: nowrap;
+}
+/* fin header */
+/* MAIN */
+main {
+    display: flex;
+    flex-direction: row-reverse;
+    gap: 2vw;
+}
+/* le menu */
+#desktopMenu {
+    display: none;
+    overflow: hidden;
+}
+#mobileMenu {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 0vw;
+    height: 100vh;
+    background-color: white;
+    color: black;
+    z-index: 1;
+    overflow: hidden;
+}
+#mobileMenu form {
+    margin-top: 10vh;
+    overflow: hidden;
+}
+#hamburger {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 2;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+}
+.mobileUp {
+    animation: menuUp 0.5s ease-in-out 0s 1 normal forwards;
+}
+.mobileDown {
+    animation: menuDown 0.5s ease-in-out 0s 1 normal forwards;
+}
+@keyframes menuUp {
+    0% {
+        width: 0vw;
+    }
+    100% {
+        width: 100vw;
+    }
+}
+@keyframes menuDown {
+    0% {
+        width: 100vw;
+    }
+    100% {
+        width: 0vw;
+    }
+}
+form {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    gap: 2vh;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+h3, input, select, option, label {
+    color: black;
+}
+h3 {
+    font-size: calc(15px + 1vmin);
+    font-variant: small-caps;
+}
+input, select {
+    padding: 10px;
+}
+input[type="submit"] {
+    background-color: #00b300;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+}
+/* fin menu */
+/* debut calendrier */
+#answer {
+    z-index: 0;
+    flex: 1;
+    width: 100%;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2vh;
+    background: rgba(0, 0, 0, 0.158);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    -webkit-backdrop-filter: blur(3px);
+    backdrop-filter: blur(3px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    margin: 5px;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+tr {
+    display: flex;
+}
+th {
+    padding-top: 5px;
+    height:calc(15px + 2vmax);
+    text-align: center;
+    border: 1px solid white;
+    font-size: calc(6px + 1vmin);
+}
+td {
+    padding-left: 6px;
+    padding-top: 4px;
+    height:calc(15px + 4vmax);
+    border: 1px solid white;
+    font-size: calc(8px + 1vmin);
+}
+th, td {
+    flex: 1;
+    min-width: 12vw;
+    
+}
+.emptyCell {
+    background: rgba(0, 0, 0, 0.528);
+}
+.noShowOnMobile {
+    display: none;
+}
+@media screen and (min-width: 576px) {
+    header {
+        margin: 2vh auto 2vh auto;
+    }
+    #mobileMenu {
+        display: none;
+    }
+    #desktopMenu {
+        background: rgba(0, 0, 0, 0.158);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        -webkit-backdrop-filter: blur(3px);
+        backdrop-filter: blur(3px);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        display: block;
+        width: 90%;
+        margin: auto;
+    }
+    form {
+        align-items: center;
+    }
+    #desktopMenu h3, #desktopMenu label {
+        color: white;
+    }
+    #desktopMenu h3 {
+        text-align: center;
+    }
+    .desktopMenuDiv {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        width: 100%;
+    }
+    #yearInput, #monthInput {
+        width: 15vw;
+        border: none;
+    }
+    input[type="submit"] {
+        width: 15vw;
+    }
+    #hamburger {
+        display: none;
+    }
+    main {
+        gap: 2vh;
+        flex-direction: column;
+    }
+    #answer {
+        margin: auto;
+        width: 90%;
+    }
+    td {
+        height: calc(15px + 5.5vmin);
+    }
+    .noShowOnMobile {
+        display: block;
+    }
+}
+.redTxt {
+    color: red;
+    font-weight: bold;
+}
