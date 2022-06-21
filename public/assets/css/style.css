@@ -154,7 +154,8 @@ td {
     padding-top: 4px;
     height:calc(15px + 4vmax);
     border: 1px solid white;
-    font-size: calc(8px + 1vmin);
+    font-size: calc(5px + 1vmin);
+    overflow: hidden;
 }
 th, td {
     flex: 1;
@@ -164,8 +165,10 @@ th, td {
 .emptyCell {
     background: rgba(0, 0, 0, 0.528);
 }
-.noShowOnMobile {
-    display: none;
+.birthdayLogo, .calendarLogo {
+    width: calc(15px + 2vmin);
+    height: calc(15px + 2vmin);
+    margin-right: 5px;
 }
 @media screen and (min-width: 576px) {
     header {

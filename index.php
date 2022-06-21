@@ -2,8 +2,13 @@
 //Ajout spécial de Thierry : anniversaire de la promo
 $birthday = array();
 $birthday['Anthony'] = new DateTime('24 april 1985');
-$birthday['Stephane'] = new DateTime('1 february 1991');
-$birthday['Loic'] = new DateTime('13 september 1972');
+$birthday['Stephane'] = new DateTime('1 february 1992');
+$birthday['Loic'] = new DateTime('13 september 1982');
+$birthday['Dimitri'] = new DateTime('11 september 1991');
+$birthday['Quentin'] = new DateTime('16 march 1992');
+$birthday['Mehdi'] = new DateTime('10 august 1998');
+$birthday['Thibaud'] = new DateTime('13 november 1994');
+$birthday['Maxime'] = new DateTime('15 june 1987');
 $birthday['Aurore'] = new DateTime('7 july 1985');
 $birthday['Lea'] = new DateTime('4 february 2011');
 $birthday['Sylvie'] = new DateTime('6 august 1960');
@@ -11,14 +16,17 @@ $birthday['Gerard'] = new DateTime('6 may 1956');
 $birthday['Vincent'] = new DateTime('4 march 1989');
 $birthday['Pierre'] = new DateTime('24 november 1948');
 // $birthday[''] = new DateTime('');
+
+//fetchage
+function fetchGo($year) {
+    $apiUrl = 'https://calendrier.api.gouv.fr/jours-feries/metropole/'.$year.'.json';
+    $response = file_get_contents($apiUrl, False);
+    $data = json_decode($response);
+    return $data;
+}
 //regex
 $yearPattern = "/^[12][0-9]{3}$/";
 $monthPattern = "/^([1-9]|1[012])$/";
-function countDays($month, $year)
-{
-    $result = cal_days_in_month(CAL_GREGORIAN, $month, $year);
-    return $result; //renvoi le nombre de jours qu'il y a dans le mois selectionné
-}
 function whatsTheFirstDayOfTheMonth($month, $year)
 {
     $date1 = new DateTime('1-' . $month . '-' . $year);
@@ -33,7 +41,7 @@ function getMonthInLetter($month, $year) {
 //LA grosse fonction de création du calendrier
 function createTehCalendar($nbDays, $firstDay, $year, $monthInLetter, $month, $birthday)
 {
-    $firstDayNumber = $firstDay; // necessaire pour la boucle while ligne 58
+    $firstDayNumber = $firstDay; // necessaire pour la boucle while ligne 72
     //de combien de lignes ai-je besoin ( décalage lié au premier jour + nb de jours ds le mois) ?
     if ($firstDayNumber + $nbDays > 36) { 
         $fiveOrSixLign = 42;
@@ -87,22 +95,42 @@ function createTehCalendar($nbDays, $firstDay, $year, $monthInLetter, $month, $b
                         if ($i == $daysTemp) { 
                             //alors j'ajoute le nom de l'heureux élu à la variable
                             $age = $year - $yearTemp;
-                            $birtdayName .= '<span class="noShowOnMobile">' . $key . ' ' . $age .'ans </span><br>';
+                            $birtdayName .= $key . ' ' . $age.' ans';
                         }
                     }
                 }
             }
             //Fin du forEach
+            //SECTION JOURS FERIES
+            $data = fetchGo($year);
+            $holidayName = '';
+            foreach ($data as $key => $value) {                
+                $holidayDate = new DateTime($key);
+                $holidayMonth = $holidayDate->format('m');
+                //controle du mois
+                if ($holidayMonth == $month) {
+                    //controle du jour
+                    $holidayDay = $holidayDate->format('d');
+                    if ($holidayDay == $i) {
+                        $holidayName = $value;
+                    }
+                }
+            }
             //si il y a eu 1 ou plusieurs anniversaire(s)
-            if (!empty($birtdayName)) {
-                $calendar .= '<td>' . $i . '<br>' .$birtdayName .'</td>';
+            if (!empty($birtdayName) && !empty($holidayName)) {
+                $calendar .= '<td>' . $i . '<br>' .$holidayName . '<br>' .$birtdayName .'</td>';
                 $dayNumberToUse += 1; //c'est cette variable qui permet de savoir si on passe a la ligne ou non.
-            //Sinon c'est que y a pas
+                //Sinon c'est que y a pas
+            } elseif (!empty($birtdayName)) {
+                $calendar .= '<td>' . $i . '<br><img class="birthdayLogo" src="public/assets/img/birthday.svg" title="'.$birtdayName.'" alt="logo birthday">' .'</td>';
+                $dayNumberToUse += 1; //c'est cette variable qui permet de savoir si on passe a la ligne ou non.
+            } elseif (!empty($holidayName)) {
+                $calendar .= '<td>' . $i . '<br><img class="calendarLogo" src="public/assets/img/calendar.svg" title="'.$holidayName.'" alt="logo calendar">'.'</td>';
+                $dayNumberToUse += 1; //c'est cette variable qui permet de savoir si on passe a la ligne ou non.
             } else {
                 $calendar .= '<td>' . $i . '</td>';
                 $dayNumberToUse += 1; //c'est cette variable qui permet de savoir si on passe a la ligne ou non.
             }
-            //FIN SECTION BIRTHDAY
         } elseif ($i > $nbDays) { //si i est supérieur a nbdays, on ajoute une case vide pour completer à 35 ou 42 cases.
             $calendar .= '<td class="emptyCell"></td>';
             $dayNumberToUse += 1; //c'est cette variable qui permet de savoir si on passe a la ligne ou non.
@@ -118,9 +146,7 @@ function createTehCalendar($nbDays, $firstDay, $year, $monthInLetter, $month, $b
     return $calendar;
 }
 
-if (empty($_POST['yearInput']) && empty($_POST['monthInput'])) {
-    //si c'est vide
-} else {
+if (!empty($_POST['yearInput']) && !empty($_POST['monthInput'])) {    
     $year = $_POST['yearInput'];                        //année souhaité
     $month = $_POST['monthInput'];                      // mois souhaité
     // si les 2 champs sont remplis on vérifie les patterns
@@ -131,8 +157,8 @@ if (empty($_POST['yearInput']) && empty($_POST['monthInput'])) {
         $monthError = '<br><span class="redTxt">Veuillez entrer un mois valide</span>';
     }
     //creation calendrier SI les 2 data au dessus sont OK
-    if (empty($yearError) && empty($monthError)) {
-        $nbDaysToThrow = countDays($month, $year);  // Nombre de jours qu'on devra afficher
+    if (empty($yearError) && empty($monthError)) {    
+        $nbDaysToThrow = cal_days_in_month(CAL_GREGORIAN, $month, $year);  // Nombre de jours qu'on devra afficher
         $firstDay = whatsTheFirstDayOfTheMonth($month, $year); // Le premier jour du mois
         $monthInLetter = getMonthInLetter($month, $year); // Le mois en lettre
         $calendar = createTehCalendar($nbDaysToThrow, $firstDay, $year, $monthInLetter, $month, $birthday); // Création du calendrier
