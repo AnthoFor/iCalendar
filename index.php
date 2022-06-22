@@ -16,13 +16,16 @@ $birthday['Gerard'] = new DateTime('6 may 1956');
 $birthday['Vincent'] = new DateTime('4 march 1989');
 $birthday['Pierre'] = new DateTime('24 november 1948');
 // $birthday[''] = new DateTime('');
+//les options du select des années :
+$yearSelect = '';
 
 //fetchage
 function fetchGo($year) {
     $apiUrl = 'https://calendrier.api.gouv.fr/jours-feries/metropole/'.$year.'.json';
-    $response = file_get_contents($apiUrl, False);
-    $data = json_decode($response);
-    return $data;
+        $response = @file_get_contents($apiUrl, False);
+        $data = json_decode($response);
+        return $data;
+
 }
 //regex
 $yearPattern = "/^[12][0-9]{3}$/";
@@ -102,22 +105,24 @@ function createTehCalendar($nbDays, $firstDay, $year, $monthInLetter, $month, $b
             }
             //SECTION JOURS FERIES
             $data = fetchGo($year);
-            $holidayName = '';
-            foreach ($data as $key => $value) {                
-                $holidayDate = new DateTime($key);
-                $holidayMonth = $holidayDate->format('m');
-                //controle du mois
-                if ($holidayMonth == $month) {
-                    //controle du jour
-                    $holidayDay = $holidayDate->format('d');
-                    if ($holidayDay == $i) {
-                        $holidayName = $value;
+            if (!empty($data)) {
+                $holidayName = '';
+                foreach ($data as $key => $value) {                
+                    $holidayDate = new DateTime($key);
+                    $holidayMonth = $holidayDate->format('m');
+                    //controle du mois
+                    if ($holidayMonth == $month) {
+                        //controle du jour
+                        $holidayDay = $holidayDate->format('d');
+                        if ($holidayDay == $i) {
+                            $holidayName = $value;
+                        }
                     }
                 }
             }
             //si il y a eu 1 ou plusieurs anniversaire(s)
             if (!empty($birtdayName) && !empty($holidayName)) {
-                $calendar .= '<td>' . $i . '<br>' .$holidayName . '<br>' .$birtdayName .'</td>';
+                $calendar .= '<td>' . $i . '<br><img class="calendarLogo" src="public/assets/img/calendar.svg" title="'.$holidayName.'" alt="logo calendar"><img class="birthdayLogo" src="public/assets/img/birthday.svg" title="'.$birtdayName.'" alt="logo birthday">' .'</td>';
                 $dayNumberToUse += 1; //c'est cette variable qui permet de savoir si on passe a la ligne ou non.
                 //Sinon c'est que y a pas
             } elseif (!empty($birtdayName)) {
@@ -161,7 +166,11 @@ if (!empty($_POST['yearInput']) && !empty($_POST['monthInput'])) {
         $firstDay = whatsTheFirstDayOfTheMonth($month, $year); // Le premier jour du mois
         $monthInLetter = getMonthInLetter($month, $year); // Le mois en lettre
         $calendar = createTehCalendar($nbDaysToThrow, $firstDay, $year, $monthInLetter, $month, $birthday); // Création du calendrier
-    }    
+    }  
+    for ($i=1950; $i < 2050; $i++) {
+            $isSelected = (!empty($year) && $year == $i) ? 'selected' : '';
+            $yearSelect .= "<option value=\"$i\" $isSelected>$i</option>";
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -188,7 +197,10 @@ if (!empty($_POST['yearInput']) && !empty($_POST['monthInput'])) {
                 <div class="desktopMenuDiv">
                     <div class="subMenuDiv">
                         <label for="yearInput">Année:</label>
-                        <input type="number" name="yearInput" id="yearInput" min="1900" max="2099" step="1" value="<?=(!empty($year))?$year:'2022'?>">
+                        <select name="yearInput" id="yearInput">
+                            <?=$yearSelect?>
+                        </select>
+                        <!-- <input type="number" name="yearInput" id="yearInput" min="1900" max="2099" step="1" value="<?=(!empty($year))?$year:'2022'?>"> -->
                         <?=$yearError??''?>
                     </div>
                     <div class="subMenuDiv">
@@ -218,7 +230,10 @@ if (!empty($_POST['yearInput']) && !empty($_POST['monthInput'])) {
             <form action="" method="POST">
                 <h3>Choisir l'année et le mois</h3>
                 <label for="yearInput">Année:</label>
-                <input type="number" name="yearInput" id="yearInput" min="1900" max="2099" step="1" value="<?=(!empty($year))?$year:'2022'?>">
+                <!-- <input type="number" name="yearInput" id="yearInput" min="1900" max="2099" step="1" value="<?=(!empty($year))?$year:'2022'?>"> -->
+                <select name="yearInput" id="yearInput">
+                            <?=$yearSelect?>
+                        </select>
                 <?=$yearError??''?>
                 <label for="monthInput">Mois:</label>
                 <select name="monthInput" id="monthInput">
