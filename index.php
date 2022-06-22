@@ -100,7 +100,6 @@ function createTehCalendar($nbDays, $firstDay, $year, $monthInLetter, $month, $b
                     }
                 }
             }
-            //Fin du forEach
             //SECTION JOURS FERIES
             $data = fetchGo($year);
             $holidayName = '';

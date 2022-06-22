@@ -166,8 +166,8 @@ th, td {
     background: rgba(0, 0, 0, 0.528);
 }
 .birthdayLogo, .calendarLogo {
-    width: calc(15px + 2vmin);
-    height: calc(15px + 2vmin);
+    width: calc(15px + 1vmin);
+    height: calc(15px + 1vmin);
     margin-right: 5px;
 }
 @media screen and (min-width: 576px) {
@@ -223,8 +223,10 @@ th, td {
     td {
         height: calc(15px + 5.5vmin);
     }
-    .noShowOnMobile {
-        display: block;
+    .birthdayLogo, .calendarLogo {
+        width: calc(15px + 2vmin);
+        height: calc(15px + 2vmin);
+        margin-right: 5px;
     }
 }
 .redTxt {
