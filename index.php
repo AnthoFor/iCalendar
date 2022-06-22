@@ -25,7 +25,6 @@ function fetchGo($year) {
         $response = @file_get_contents($apiUrl, False);
         $data = json_decode($response);
         return $data;
-
 }
 //regex
 $yearPattern = "/^[12][0-9]{3}$/";
@@ -149,7 +148,10 @@ function createTehCalendar($nbDays, $firstDay, $year, $monthInLetter, $month, $b
     $calendar .= '</div>';
     return $calendar;
 }
-
+for ($i=1950; $i < 2050; $i++) {
+    $isSelected = (!empty($year) && $year == $i) ? 'selected' : '';
+    $yearSelect .= "<option value=\"$i\" $isSelected>$i</option>";
+}
 if (!empty($_POST['yearInput']) && !empty($_POST['monthInput'])) {    
     $year = $_POST['yearInput'];                        //année souhaité
     $month = $_POST['monthInput'];                      // mois souhaité
@@ -167,10 +169,7 @@ if (!empty($_POST['yearInput']) && !empty($_POST['monthInput'])) {
         $monthInLetter = getMonthInLetter($month, $year); // Le mois en lettre
         $calendar = createTehCalendar($nbDaysToThrow, $firstDay, $year, $monthInLetter, $month, $birthday); // Création du calendrier
     }  
-    for ($i=1950; $i < 2050; $i++) {
-            $isSelected = (!empty($year) && $year == $i) ? 'selected' : '';
-            $yearSelect .= "<option value=\"$i\" $isSelected>$i</option>";
-    }
+    
 }
 ?>
 <!DOCTYPE html>
