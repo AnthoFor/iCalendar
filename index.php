@@ -168,7 +168,7 @@ if (!empty($_POST['yearInput']) && !empty($_POST['monthInput'])) {
         $calendar = createTehCalendar($nbDaysToThrow, $firstDay, $year, $monthInLetter, $month, $birthday); // Création du calendrier
     }  
 }
-for ($i=date('Y') - 20; $i < date('Y') + 5; $i++) {
+for ($i=date('Y') - 20; $i <= date('Y') + 5; $i++) {
     $isSelected = (!empty($year) && $year == $i) ? 'selected' : '';
     $yearSelect .= "<option value=\"$i\" $isSelected>$i</option>";
 }    
